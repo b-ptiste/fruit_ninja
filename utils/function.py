@@ -1,5 +1,4 @@
 from utils.constant import HIGH, WIDTH
-from src.FruitAnimation.explose import Explose
 import cv2
 import time
 import pygame
@@ -30,44 +29,19 @@ def move_player(game):
     game.fgame.player.move(cx, cy)
 
 
-def check_collusion(game):
-    for fruit in game.fgame.all_fruit.sprites():
-        if game.fgame.check_collision(game.fgame.player, fruit):
-            if fruit.bonus == "bomb":
-                game.all_explosion.add(Explose(fruit.rect.x, fruit.rect.y))
-                for explosion in game.all_explosion:
-                    if explosion.animation:
-                        explosion.animate()
-                    else:
-                        game.all_explosion.remove(explosion)
-                game.bomb_collusion = True
-            elif fruit.bonus is None:
-                game.fgame.player.point += fruit.point * (1 + game.fgame.bonus_multiplicative)
-            elif fruit.bonus == "banane":
-                game.fgame.bonus_multiplicative = True
-                game.begin_time_multiplicative = time.time()
-            elif fruit.bonus == "banane_glace":
-                game.fgame.bonus_freeze += 1
-            elif fruit.bonus == "piment":
-                game.fgame.bonus_speed = True
-                game.begin_time_speed = time.time()
-
-            game.fgame.all_fruit.remove(fruit)
-
-
-def update_bonus(game, font):
+def update_bonus(game, font, SCREEN):
     text_bonus_speed = font.render("BONUS fruit", True, (255, 255, 255))
     text_bonus_multiplicative = font.render("BONUS Score x2", True, (255, 255, 255))
     # text_bonus_freeze = font.render("BONUS + 2 Temps", True, (255, 255, 255))
 
     if game.fgame.bonus_speed:
         if time.time() - game.begin_time_speed < 2:
-            game.screen.blit(text_bonus_speed, (220, 200))
+            SCREEN.blit(text_bonus_speed, (WIDTH/2 - 100, 200))
         if time.time() - game.begin_time_speed > 10:
             game.fgame.bonus_speed = False
     if game.fgame.bonus_multiplicative:
         if time.time() - game.begin_time_multiplicative < 2:
-            game.screen.blit(text_bonus_multiplicative, (220, 220))
+            SCREEN.blit(text_bonus_multiplicative, (WIDTH/2 - 100, 600))
         if time.time() - game.begin_time_multiplicative > 10:
             game.fgame.bonus_multiplicative = False
 
@@ -83,6 +57,5 @@ def check_end(game):
         pass
         # game.quit()
     elif time.time() - game.startTime - 2 * game.fgame.bonus_freeze > 60:
-        running = False
         print(f"Le score est de {game.fgame.player.point}")
         pygame.quit()

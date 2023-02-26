@@ -30,9 +30,8 @@ def load_animation_images():
     for i in range(1, 46):
         image_path = os.path.join(IMAGE_PATH, "explose" + str(i) + ".png")
         img = pygame.image.load(image_path)
-        img_scale = pygame.transform.scale(img, (80, 80))
+        img_scale = pygame.transform.scale(img, (130, 130))
         images.append(img_scale)
-
     return images
 
 

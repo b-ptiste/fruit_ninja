@@ -19,6 +19,6 @@ class Fruit(pygame.sprite.Sprite):
              self.speed *= 1
 
     def rotate(self):
-        self.angle += 30
+        self.angle += 10
         self.image = pygame.transform.rotozoom(self.origin_image, self.angle, 1)
         self.rect = self.image.get_rect(center=self.rect.center)
