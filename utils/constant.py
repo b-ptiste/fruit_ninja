@@ -6,6 +6,7 @@ WIDTH = 1920
 
 # data path
 IMAGE_PATH = os.path.join("..", "data", "images")
+ASSET_PATH = os.path.join("..", "data", "assets")
 SOUND_PATH = os.path.join("..", "data", "sonor_effects")
 
 # fruit list

@@ -80,7 +80,8 @@ def check_end(game):
                 print("fermeture du jeu")
 
     if game.bomb_collusion:
-        game.quit()
+        pass
+        # game.quit()
     elif time.time() - game.startTime - 2 * game.fgame.bonus_freeze > 60:
         running = False
         print(f"Le score est de {game.fgame.player.point}")

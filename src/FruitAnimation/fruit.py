@@ -16,7 +16,7 @@ class Fruit(pygame.sprite.Sprite):
         self.rect.y = cy
         self.bonus = bonus
         if bonus == "bomb":
-             self.speed *= 5
+             self.speed *= 1
 
     def rotate(self):
         self.angle += 30
