@@ -13,7 +13,7 @@ FRUIT_LIST = ["ananas", "fraise", "fruit_passion", "kiwi", "pasteque", "poivron_
               "poivron_vert", "pomme_verte"]
 
 # bonus list
-BONUS_LIST = ["banane", "banane_glace", "piment"]
+BONUS_LIST = ["banane", "banane_glace", "piment", "bomb"]
 
 
 # text when bonus is collected

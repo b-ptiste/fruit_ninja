@@ -59,6 +59,7 @@ class FruitGame:
             sens = 1
             cx = random.randint(cx_min, cx_max)
             cy = HIGH
+
         self.all_fruit.add(Fruit(path, speed, direction, sens, cx, cy, rand_bonus))
 
     def move(self):

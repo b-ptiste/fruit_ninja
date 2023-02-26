@@ -3,7 +3,7 @@ from src.gameLauncher import GameLauncher
 import time
 import random
 from utils.constant import WIDTH
-from utils.function import move_player, move_fruit, update_bonus, check_end
+from utils.function import move_player, check_collusion, update_bonus, check_end
 
 # create game
 game = GameLauncher()
@@ -26,7 +26,7 @@ while running:
     game.screen.blit(time_text, (WIDTH - 400, 20))
 
     # creation des fruits
-    with_bonus = random.randint(1, 100)
+    with_bonus = random.randint(1, 50)
     if time.time() - game.currTime > 1 - 0.75 * game.fgame.bonus_speed:
         game.fgame.launch_fruit()
         game.currTime = time.time()
@@ -38,11 +38,17 @@ while running:
 
     # position du doigt
     move_player(game)
-    move_fruit(game)
+    check_collusion(game)
+    game.all_explosion.draw(game.screen)
     update_bonus(game, font)
 
     game.fgame.all_fruit.draw(game.screen)
-
-    # screen update
     pygame.display.flip()
+    # screen update
+
     check_end(game)
+
+#TODO add 3 lifes
+#TODO entry menu
+#TODO exit menu
+#TODO refactoring code

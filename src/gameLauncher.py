@@ -28,6 +28,8 @@ class GameLauncher:
         self.startTime = time.time()
         self.begin_time_multiplicative = time.time()
         self.begin_time_speed = time.time()
+        self.all_explosion = pygame.sprite.Group()
+        self.bomb_collusion = False
 
 
 

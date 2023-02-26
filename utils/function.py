@@ -1,7 +1,9 @@
 from utils.constant import HIGH, WIDTH
+from src.FruitAnimation.explose import Explose
 import cv2
 import time
 import pygame
+
 
 def get_position(results):
     cx, cy = 0, 0
@@ -28,11 +30,18 @@ def move_player(game):
     game.fgame.player.move(cx, cy)
 
 
-def move_fruit(game):
+def check_collusion(game):
     for fruit in game.fgame.all_fruit.sprites():
-
         if game.fgame.check_collision(game.fgame.player, fruit):
-            if fruit.bonus is None:
+            if fruit.bonus == "bomb":
+                game.all_explosion.add(Explose(fruit.rect.x, fruit.rect.y))
+                for explosion in game.all_explosion:
+                    if explosion.animation:
+                        explosion.animate()
+                    else:
+                        game.all_explosion.remove(explosion)
+                game.bomb_collusion = True
+            elif fruit.bonus is None:
                 game.fgame.player.point += fruit.point * (1 + game.fgame.bonus_multiplicative)
             elif fruit.bonus == "banane":
                 game.fgame.bonus_multiplicative = True
@@ -42,6 +51,7 @@ def move_fruit(game):
             elif fruit.bonus == "piment":
                 game.fgame.bonus_speed = True
                 game.begin_time_speed = time.time()
+
             game.fgame.all_fruit.remove(fruit)
 
 
@@ -69,7 +79,9 @@ def check_end(game):
                 pygame.quit()
                 print("fermeture du jeu")
 
-    if time.time() - game.startTime - 2 * game.fgame.bonus_freeze > 60:
+    if game.bomb_collusion:
+        game.quit()
+    elif time.time() - game.startTime - 2 * game.fgame.bonus_freeze > 60:
         running = False
         print(f"Le score est de {game.fgame.player.point}")
         pygame.quit()
