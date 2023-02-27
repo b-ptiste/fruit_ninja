@@ -1,6 +1,6 @@
 from src.FruitAnimation.player import Player
 from src.FruitAnimation.fruit import *
-from utils.constant import WIDTH, HIGH, IMAGE_PATH, FRUIT_LIST, BONUS_LIST
+from utils.constant import WIDTH, HIGH, IMAGE_PATH, FRUIT_LIST, BONUS_LIST, BOMB_LIST
 import random
 import os
 
@@ -13,7 +13,7 @@ class FruitGame:
         self.bonus_freeze = 0
         self.bonus_multiplicative = False
 
-    def launch_fruit(self, with_bonus=False):
+    def launch_fruit(self, specials=None):
         side = random.randint(1, 4)
         speed_min = 5
         speed_max = 20
@@ -26,10 +26,15 @@ class FruitGame:
 
         fruits = FRUIT_LIST
         bonus = BONUS_LIST
+        bomb = BOMB_LIST
 
-        if with_bonus:
+        if specials == "bonus":
             speed = 5
             rand_bonus = random.choice(bonus)
+            path = os.path.join(IMAGE_PATH, rand_bonus+".png")
+        elif specials == "bomb":
+            speed = 5
+            rand_bonus = random.choice(bomb)
             path = os.path.join(IMAGE_PATH, rand_bonus+".png")
         else:
             speed = random.randint(speed_min, speed_max)

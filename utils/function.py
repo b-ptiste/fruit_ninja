@@ -2,6 +2,7 @@ from utils.constant import HIGH, WIDTH
 import cv2
 import time
 import pygame
+import sys
 
 
 def get_position(results):
@@ -46,16 +47,11 @@ def update_bonus(game, font, SCREEN):
             game.fgame.bonus_multiplicative = False
 
 
-def check_end(game):
+def check_exit(game):
     for event in pygame.event.get():
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
                 pygame.quit()
                 print("fermeture du jeu")
 
-    if game.bomb_collusion:
-        pass
-        # game.quit()
-    elif time.time() - game.startTime - 2 * game.fgame.bonus_freeze > 60:
-        print(f"Le score est de {game.fgame.player.point}")
-        pygame.quit()
+

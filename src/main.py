@@ -2,8 +2,8 @@ import pygame
 from src.gameLauncher import GameLauncher
 import time
 import random
-from utils.constant import WIDTH, HIGH, ASSET_PATH, IMAGE_PATH
-from utils.function import move_player, update_bonus, check_end
+from utils.constant import WIDTH, HIGH, ASSET_PATH, IMAGE_PATH, END_TIME, RATIO_BONUS, RATIO_BOMB, AMOUNT_IT
+from utils.function import move_player, update_bonus, check_exit
 from src.FruitAnimation.explose import Explose
 import sys
 import os
@@ -116,6 +116,41 @@ def main_menu():
         pygame.display.update()
 
 
+def score_menu():
+    while True:
+        SCREEN.blit(BG, (0, 0))
+
+
+        MENU_MOUSE_POS = pygame.mouse.get_pos()
+
+        MENU_TEXT = get_font(100).render("SCORE", True, "#b68f40")
+        MENU_RECT = MENU_TEXT.get_rect(center=(WIDTH / 2, 200))
+
+        MAIN_BUTTON = Button(image=pygame.image.load(os.path.join(ASSET_PATH, "Play Rect.png")), pos=(WIDTH / 2, 875),
+                             text_input="MENU", font=get_font(75), base_color="#d7fcd4",
+                             hovering_color="White")
+        REPLAY_BUTTON = Button(image=pygame.image.load(os.path.join(ASSET_PATH, "Options Rect.png")),
+                               pos=(WIDTH / 2, 1000), text_input="REPLAY", font=get_font(75), base_color="#d7fcd4",
+                               hovering_color="White")
+
+        SCREEN.blit(MENU_TEXT, MENU_RECT)
+
+        for button in [MAIN_BUTTON, REPLAY_BUTTON]:
+            button.changeColor(MENU_MOUSE_POS)
+            button.update(SCREEN)
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if MAIN_BUTTON.checkForInput(MENU_MOUSE_POS):
+                    main_menu()
+                if REPLAY_BUTTON.checkForInput(MENU_MOUSE_POS):
+                    play()
+
+        pygame.display.update()
+
 def play():
     game = GameLauncher()
 
@@ -136,19 +171,24 @@ def play():
                 SCREEN.blit(CROSS_RED, (WIDTH - i * 150, 100))
 
         # show remaining time
-        time_text = font.render(f"Temps : {round(time.time() - game.startTime - 2 * game.fgame.bonus_freeze, 2)}",
+        time_text = font.render(f"Temps : {round(time.time() - game.startTime - game.fgame.bonus_freeze, 2)}",
                                 True,
                                 (255, 255, 255)
                                 )
         SCREEN.blit(time_text, (WIDTH - 400, 20))
 
         # creation des fruits
-        with_bonus = random.randint(1, 50)
-        if time.time() - game.currTime > 1 - 0.75 * game.fgame.bonus_speed:
-            game.fgame.launch_fruit()
-            game.currTime = time.time()
-        if with_bonus == 1:
-            game.fgame.launch_fruit(True)
+
+        for _ in range(AMOUNT_IT):
+            with_bonus = random.randint(1, RATIO_BONUS)
+            with_bomb = random.randint(1, RATIO_BOMB)
+            if time.time() - game.currTime > 1 - 0.75 * game.fgame.bonus_speed:
+                game.fgame.launch_fruit()
+                game.currTime = time.time()
+            if with_bonus == 1:
+                game.fgame.launch_fruit("bonus")
+            if with_bomb == 1:
+                game.fgame.launch_fruit("bomb")
 
         game.fgame.move()  # animation des fruits
         game.fgame.all_fruit.draw(SCREEN)  # afficher les fruits
@@ -186,12 +226,17 @@ def play():
         pygame.display.flip()
         # screen update
 
-        check_end(game)
+        if game.bomb_collusion >= 3:
+            score_menu()
+        elif time.time() - game.startTime - game.fgame.bonus_freeze > END_TIME:
+            print(f"Le score est de {game.fgame.player.point}")
+            score_menu()
+
+        check_exit(game)
 
 main_menu()
-#TODO add 3 lifes
-#TODO entry menu
-#TODO exit menu
+
+
 #TODO change mode
 #TODO save BDD
 #TODO Display best score
