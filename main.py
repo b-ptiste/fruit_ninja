@@ -7,7 +7,8 @@ from utils.function import move_player, update_bonus, check_exit
 from src.FruitAnimation.explose import Explose
 import sys
 import os
-from button import Button
+from src.tools.button import Button
+from src.database.dataBase_mongo import connect_to_db, add_score, disconect_to_db
 
 pygame.init()
 
@@ -225,16 +226,18 @@ def play():
         game.fgame.all_fruit.draw(SCREEN)
         pygame.display.flip()
         # screen update
-
-        if game.bomb_collusion >= 3:
-            score_menu()
-        elif time.time() - game.startTime - game.fgame.bonus_freeze > END_TIME:
-            print(f"Le score est de {game.fgame.player.point}")
+        cond_stop = (game.bomb_collusion >= 3) or \
+            (time.time() - game.startTime - game.fgame.bonus_freeze > END_TIME)
+        if cond_stop:
+            client = connect_to_db()
+            add_score(client['fruit_ninja'], "baptiste", game.fgame.player.point)
+            disconect_to_db(client)
             score_menu()
 
         check_exit(game)
 
-main_menu()
+if __name__ == '__main__':
+    main_menu()
 
 
 #TODO change mode
