@@ -1,5 +1,5 @@
 import os
-import pygame
+
 # picture dimension
 HIGH = 1080
 WIDTH = 1920
@@ -25,9 +25,6 @@ RATIO_BOMB = 40
 
 # AMOUNT CREATION BY IT
 AMOUNT_IT = 5
-
-# mode : EASY, MEDIUM, HARD
-MODE = "EASY"
 
 # time
 END_TIME = 15

@@ -14,5 +14,3 @@ def add_score(db, name, score):
     doc = {"name": name, "score": score}
     coll.insert_one(doc)
     
-
-def get_score()

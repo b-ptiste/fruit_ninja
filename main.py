@@ -1,54 +1,29 @@
 import pygame
+import pymongo
 from src.gameLauncher import GameLauncher
 import time
 import random
-from utils.constant import WIDTH, HIGH, ASSET_PATH, IMAGE_PATH, END_TIME, RATIO_BONUS, RATIO_BOMB, AMOUNT_IT
+from utils.config import cfg
 from utils.function import move_player, update_bonus, check_exit
 from src.FruitAnimation.explose import Explose
 import sys
 import os
 from src.tools.button import Button
-from src.database.dataBase_mongo import connect_to_db, add_score, disconect_to_db
+from src.database.dataBase_sql import add_setting_score, get_best_score
 
+from src.database.dataBase_sql import find_setting
 pygame.init()
 
-SCREEN = pygame.display.set_mode((WIDTH, HIGH))
+SCREEN = pygame.display.set_mode((cfg.GAME_SETTING.WIDTH, cfg.GAME_SETTING.HIGH))
 pygame.display.set_caption("Menu")
 
-BG = pygame.image.load(os.path.join(IMAGE_PATH, "background_jungle.jpg"))
-CROSS_GREEN = pygame.image.load(os.path.join(IMAGE_PATH, "cross_green.png"))
-CROSS_RED = pygame.image.load(os.path.join(IMAGE_PATH, "cross_red.png"))
+BG = pygame.image.load(os.path.join(cfg.PATHS.IMAGE_PATH, "background_jungle.jpg"))
+CROSS_GREEN = pygame.image.load(os.path.join(cfg.PATHS.IMAGE_PATH, "cross_green.png"))
+CROSS_RED = pygame.image.load(os.path.join(cfg.PATHS.IMAGE_PATH, "cross_red.png"))
 
 
 def get_font(size):  # Returns Press-Start-2P in the desired size
-    return pygame.font.Font(os.path.join(ASSET_PATH, "font.ttf"), size)
-
-
-def play_temp():
-    while True:
-        PLAY_MOUSE_POS = pygame.mouse.get_pos()
-
-        SCREEN.fill("black")
-
-        PLAY_TEXT = get_font(45).render("This is the PLAY screen.", True, "White")
-        PLAY_RECT = PLAY_TEXT.get_rect(center=(640, 260))
-        SCREEN.blit(PLAY_TEXT, PLAY_RECT)
-
-        PLAY_BACK = Button(image=None, pos=(640, 460),
-                           text_input="BACK", font=get_font(75), base_color="White", hovering_color="Green")
-
-        PLAY_BACK.changeColor(PLAY_MOUSE_POS)
-        PLAY_BACK.update(SCREEN)
-
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                if PLAY_BACK.checkForInput(PLAY_MOUSE_POS):
-                    main_menu()
-
-        pygame.display.update()
+    return pygame.font.Font(os.path.join(cfg.PATHS.ASSET_PATH, "font.ttf"), size)
 
 
 def options():
@@ -60,12 +35,21 @@ def options():
         OPTIONS_TEXT = get_font(45).render("This is the OPTIONS screen.", True, "Black")
         OPTIONS_RECT = OPTIONS_TEXT.get_rect(center=(640, 260))
         SCREEN.blit(OPTIONS_TEXT, OPTIONS_RECT)
-
         OPTIONS_BACK = Button(image=None, pos=(640, 460),
                               text_input="BACK", font=get_font(75), base_color="Black", hovering_color="Green")
+        OPTIONS_EASY = Button(image=None, pos=(640, 660),
+                              text_input="EASY", font=get_font(75), base_color="Black", hovering_color="Green")
+        OPTIONS_MEDIUM = Button(image=None, pos=(640, 860),
+                              text_input="MEDIUM", font=get_font(75), base_color="Black", hovering_color="Green")
+        OPTIONS_HARD = Button(image=None, pos=(640, 1060),
+                              text_input="HARD", font=get_font(75), base_color="Black", hovering_color="Green")
 
         OPTIONS_BACK.changeColor(OPTIONS_MOUSE_POS)
         OPTIONS_BACK.update(SCREEN)
+
+        for button in [OPTIONS_BACK, OPTIONS_EASY, OPTIONS_MEDIUM, OPTIONS_HARD]:
+            button.changeColor(OPTIONS_MOUSE_POS)
+            button.update(SCREEN)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -74,6 +58,20 @@ def options():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if OPTIONS_BACK.checkForInput(OPTIONS_MOUSE_POS):
                     main_menu()
+                else:
+                    if OPTIONS_EASY.checkForInput(OPTIONS_MOUSE_POS):
+                        settings = find_setting("EASY")
+                    if OPTIONS_MEDIUM.checkForInput(OPTIONS_MOUSE_POS):
+                        settings = find_setting("MEDIUM")
+                    if OPTIONS_HARD.checkForInput(OPTIONS_MOUSE_POS):
+                        settings = find_setting("HARD")
+                    # ratio
+                    cfg.GAME_SETTING.RATIO_BONUS = settings[1]
+                    cfg.GAME_SETTING.RATIO_BOMB = settings[2]
+
+                    # AMOUNT CREATION BY IT
+                    cfg.GAME_SETTING.AMOUNT_IT = settings[3]
+        
 
         pygame.display.update()
 
@@ -86,13 +84,13 @@ def main_menu():
         MENU_MOUSE_POS = pygame.mouse.get_pos()
 
         MENU_TEXT = get_font(100).render("MAIN MENU", True, "#b68f40")
-        MENU_RECT = MENU_TEXT.get_rect(center=(WIDTH / 2, 200))
+        MENU_RECT = MENU_TEXT.get_rect(center=(cfg.GAME_SETTING.WIDTH / 2, 200))
 
-        PLAY_BUTTON = Button(image=pygame.image.load(os.path.join(ASSET_PATH, "Play Rect.png")), pos=(WIDTH / 2, 500),
+        PLAY_BUTTON = Button(image=pygame.image.load(os.path.join(cfg.PATHS.ASSET_PATH, "Play Rect.png")), pos=(cfg.GAME_SETTING.WIDTH / 2, 500),
                              text_input="PLAY", font=get_font(75), base_color="#d7fcd4", hovering_color="White")
-        OPTIONS_BUTTON = Button(image=pygame.image.load(os.path.join(ASSET_PATH, "Options Rect.png")), pos=(WIDTH / 2, 750),
+        OPTIONS_BUTTON = Button(image=pygame.image.load(os.path.join(cfg.PATHS.ASSET_PATH, "Options Rect.png")), pos=(cfg.GAME_SETTING.WIDTH / 2, 750),
                                 text_input="OPTIONS", font=get_font(75), base_color="#d7fcd4", hovering_color="White")
-        QUIT_BUTTON = Button(image=pygame.image.load(os.path.join(ASSET_PATH, "Quit Rect.png")), pos=(WIDTH / 2, 900),
+        QUIT_BUTTON = Button(image=pygame.image.load(os.path.join(cfg.PATHS.ASSET_PATH, "Quit Rect.png")), pos=(cfg.GAME_SETTING.WIDTH / 2, 900),
                              text_input="QUIT", font=get_font(75), base_color="#d7fcd4", hovering_color="White")
 
         SCREEN.blit(MENU_TEXT, MENU_RECT)
@@ -125,17 +123,17 @@ def score_menu():
         MENU_MOUSE_POS = pygame.mouse.get_pos()
 
         MENU_TEXT = get_font(100).render("SCORE", True, "#b68f40")
-        MENU_RECT = MENU_TEXT.get_rect(center=(WIDTH / 2, 200))
+        MENU_RECT = MENU_TEXT.get_rect(center=(cfg.GAME_SETTING.WIDTH / 2, 200))
 
-        MAIN_BUTTON = Button(image=pygame.image.load(os.path.join(ASSET_PATH, "Play Rect.png")), pos=(WIDTH / 2, 875),
+        MAIN_BUTTON = Button(image=pygame.image.load(os.path.join(cfg.PATHS.ASSET_PATH, "Play Rect.png")), pos=(cfg.GAME_SETTING.WIDTH / 2, 875),
                              text_input="MENU", font=get_font(75), base_color="#d7fcd4",
                              hovering_color="White")
-        REPLAY_BUTTON = Button(image=pygame.image.load(os.path.join(ASSET_PATH, "Options Rect.png")),
-                               pos=(WIDTH / 2, 1000), text_input="REPLAY", font=get_font(75), base_color="#d7fcd4",
+        REPLAY_BUTTON = Button(image=pygame.image.load(os.path.join(cfg.PATHS.ASSET_PATH, "Options Rect.png")),
+                               pos=(cfg.GAME_SETTING.WIDTH / 2, 1000), text_input="REPLAY", font=get_font(75), base_color="#d7fcd4",
                                hovering_color="White")
 
         SCREEN.blit(MENU_TEXT, MENU_RECT)
-
+        print(get_best_score(""))
         for button in [MAIN_BUTTON, REPLAY_BUTTON]:
             button.changeColor(MENU_MOUSE_POS)
             button.update(SCREEN)
@@ -167,22 +165,22 @@ def play():
 
         for i in range(4):
             if i > game.bomb_collusion:
-                SCREEN.blit(CROSS_GREEN, (WIDTH - i * 150, 100))
+                SCREEN.blit(CROSS_GREEN, (cfg.GAME_SETTING.WIDTH - i * 150, 100))
             else:
-                SCREEN.blit(CROSS_RED, (WIDTH - i * 150, 100))
+                SCREEN.blit(CROSS_RED, (cfg.GAME_SETTING.WIDTH - i * 150, 100))
 
         # show remaining time
         time_text = font.render(f"Temps : {round(time.time() - game.startTime - game.fgame.bonus_freeze, 2)}",
                                 True,
                                 (255, 255, 255)
                                 )
-        SCREEN.blit(time_text, (WIDTH - 400, 20))
+        SCREEN.blit(time_text, (cfg.GAME_SETTING.WIDTH - 400, 20))
 
         # creation des fruits
 
-        for _ in range(AMOUNT_IT):
-            with_bonus = random.randint(1, RATIO_BONUS)
-            with_bomb = random.randint(1, RATIO_BOMB)
+        for _ in range(cfg.GAME_SETTING.AMOUNT_IT):
+            with_bonus = random.randint(1, cfg.GAME_SETTING.RATIO_BONUS)
+            with_bomb = random.randint(1, cfg.GAME_SETTING.RATIO_BOMB)
             if time.time() - game.currTime > 1 - 0.75 * game.fgame.bonus_speed:
                 game.fgame.launch_fruit()
                 game.currTime = time.time()
@@ -227,11 +225,9 @@ def play():
         pygame.display.flip()
         # screen update
         cond_stop = (game.bomb_collusion >= 3) or \
-            (time.time() - game.startTime - game.fgame.bonus_freeze > END_TIME)
+            (time.time() - game.startTime - game.fgame.bonus_freeze > cfg.GAME_SETTING.END_TIME)
         if cond_stop:
-            client = connect_to_db()
-            add_score(client['fruit_ninja'], "baptiste", game.fgame.player.point)
-            disconect_to_db(client)
+            add_setting_score("baptisye", int(game.fgame.player.point))
             score_menu()
 
         check_exit(game)
