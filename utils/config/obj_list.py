@@ -11,3 +11,4 @@ OBJ_LIST.BONUS_LIST = ["banane", "banane_glace", "piment"]
 
 #bomb list
 OBJ_LIST.BOMB_LIST = ["bomb"]
+

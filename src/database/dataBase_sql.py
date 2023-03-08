@@ -21,11 +21,12 @@ def find_setting(name):
   """)
 
   myresult = cursor.fetchall()
+  mydb.close()
 
   return(myresult[0])
 
 
-def add_setting_score(name, score):
+def add_score(name, score):
     mydb = mysql.connector.connect(
     host=host,
     user=user,
@@ -35,13 +36,18 @@ def add_setting_score(name, score):
     mycursor = mydb.cursor()
   
 
-    mycursor.execute(add_setting_score(name, score))
+    mycursor.execute(f"""
+    INSERT INTO SCORES(NAME, SCORE)
+    VALUES ('{name}', {score});
+    
+    """
+    )
 
     mydb.commit()
-    
+    mydb.close()
 
 
-def get_best_score(database):
+def get_best_score():
   
   mydb = mysql.connector.connect(
   host=host,
@@ -58,5 +64,5 @@ def get_best_score(database):
 
   myresult = cursor.fetchall()
 
-  return(myresult[0])
+  return(myresult)
 

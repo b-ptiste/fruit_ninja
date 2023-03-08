@@ -2,19 +2,8 @@ from player import Player
 from fruit import *
 import random
 import os
+from utils.config import cfg
 
-# path
-IMAGE_PATH = os.path.join("..", "..", "data", "images")
-SOUND_PATH = os.path.join("..","..", "data", "sonor_effects")
-
-# fruit list
-
-fruit_list = ["ananas", "fraise", "fruit_passion", "kiwi", "pasteque", "poivron_jaune", "poivron_rouge",
-                  "poivron_vert", "pomme_verte"]
-
-# bonus list
-
-bonus_list = ["banane", "banane_glace", "piment"]
 class Game:
     def __init__(self):
         self.player = Player()
@@ -34,17 +23,17 @@ class Game:
         cy_min = 200
         cy_max = 250
 
-        fruits = fruit_list
+        fruits = cfg.OBJ_LIST.fruit_list
 
-        bonus = bonus_list
+        bonus = cfg.OBJ_LIST.bonus_list
         if with_bonus:
             speed = 5
             rand_bonus = random.choice(bonus)
-            path = os.path.join(IMAGE_PATH, rand_bonus+".png")
+            path = os.path.join(cfg.PATHS.IMAGE_PATH, rand_bonus+".png")
         else:
             speed = random.randint(speed_min, speed_max)
             rand_bonus = None
-            path = os.path.join(IMAGE_PATH, random.choice(fruits) + ".png")
+            path = os.path.join(cfg.PATHS.IMAGE_PATH, random.choice(fruits) + ".png")
 
         if side == 1:
             direction = random.randint(dir_min, dir_max)

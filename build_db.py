@@ -1,7 +1,6 @@
 import mysql.connector
 
-
-def create_sql_db(host="localhost", user="root", password="Baptiste-2", database ="fruitdb"):
+def create_sql_db(host="localhost", user="root", password="Baptiste-2"):
     mydb = mysql.connector.connect(
     host=host,
     user=user,
@@ -9,6 +8,11 @@ def create_sql_db(host="localhost", user="root", password="Baptiste-2", database
     )
     mycursor = mydb.cursor()
     mycursor.execute("CREATE DATABASE fruitdb")
+    mydb.commit()
+    mydb.close()
+
+def create_sql_table(host="localhost", user="root", password="Baptiste-2", database ="fruitdb"):
+    
     mydb = mysql.connector.connect(
     host=host,
     user=user,
@@ -32,9 +36,10 @@ def create_sql_db(host="localhost", user="root", password="Baptiste-2", database
     mycursor.execute("""
     CREATE TABLE SCORES(
     NAME CHAR(20) NOT NULL,
-    SCORE INT NOT NULL,
+    SCORE INT NOT NULL
     );""")
     mydb.commit()
+    mydb.close()
 
 
 
@@ -48,7 +53,9 @@ def add_setting_table(name, r_bonus, r_bomb, amount_it):
 if __name__ == '__main__':
     # Connect to the MySQL server
     
-    mycursor = create_sql_db()
+    create_sql_db()
+    create_sql_table()
+
 
     
     

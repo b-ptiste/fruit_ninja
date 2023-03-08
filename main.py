@@ -1,5 +1,4 @@
 import pygame
-import pymongo
 from src.gameLauncher import GameLauncher
 import time
 import random
@@ -9,7 +8,7 @@ from src.FruitAnimation.explose import Explose
 import sys
 import os
 from src.tools.button import Button
-from src.database.dataBase_sql import add_setting_score, get_best_score
+from src.database.dataBase_sql import add_score, get_best_score
 
 from src.database.dataBase_sql import find_setting
 pygame.init()
@@ -76,6 +75,97 @@ def options():
         pygame.display.update()
 
 
+
+def name_menu():
+
+    
+    base_font = get_font(32)
+    user_text = ''
+    input_rect = pygame.Rect(200, 200, 140, 32)
+    color_active = pygame.Color('lightskyblue3')
+
+    # color_passive store color(chartreuse4) which is
+    # color of input box.
+    color_passive = pygame.Color('chartreuse4')
+    color = color_passive
+    
+    active = False
+    while True:
+        SCREEN.blit(BG, (0, 0))
+
+
+        MENU_MOUSE_POS = pygame.mouse.get_pos()
+
+        NAME_TEXT = get_font(100).render("MAIN MENU", True, "#b68f40")
+        MENU_RECT = NAME_TEXT.get_rect(center=(cfg.GAME_SETTING.WIDTH / 2, 200))
+
+        PLAY_BUTTON = Button(image=pygame.image.load(os.path.join(cfg.PATHS.ASSET_PATH, "Play Rect.png")), pos=(cfg.GAME_SETTING.WIDTH / 2, 500),
+                             text_input="PLAY", font=get_font(75), base_color="#d7fcd4", hovering_color="White")
+        BACK_BUTTON = Button(image=pygame.image.load(os.path.join(cfg.PATHS.ASSET_PATH, "Quit Rect.png")), pos=(cfg.GAME_SETTING.WIDTH / 2, 900),
+                             text_input="QUIT", font=get_font(75), base_color="#d7fcd4", hovering_color="White")
+
+
+        SCREEN.blit(NAME_TEXT, MENU_RECT)
+
+        for button in [PLAY_BUTTON, BACK_BUTTON]:
+            button.changeColor(MENU_MOUSE_POS)
+            button.update(SCREEN)
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if PLAY_BUTTON.checkForInput(MENU_MOUSE_POS):
+                    cfg.GAME_SETTING.NAME = user_text
+                    play()
+                if BACK_BUTTON.checkForInput(MENU_MOUSE_POS):
+                    main_menu()
+
+        
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if input_rect.collidepoint(event.pos):
+                    active = True
+                else:
+                    active = False
+    
+            if event.type == pygame.KEYDOWN:
+    
+                # Check for backspace
+                if event.key == pygame.K_BACKSPACE:
+    
+                    # get text input from 0 to -1 i.e. end.
+                    user_text = user_text[:-1]
+    
+                # Unicode standard is used for string
+                # formation
+                elif event.key == pygame.K_RETURN:
+                    cfg.GAME_SETTING.NAME = user_text
+                    play()
+    
+                else:
+                    user_text += event.unicode
+            
+        if active:
+            color = color_active
+        else:
+            color = color_passive
+            
+        # draw rectangle and argument passed which should
+        # be on screen
+        pygame.draw.rect(SCREEN, color, input_rect)
+    
+        text_surface = base_font.render(user_text, True, (255, 255, 255))
+        
+        # render at position stated in arguments
+        SCREEN.blit(text_surface, (input_rect.x+5, input_rect.y+5))
+        
+        # set width of textfield so that text cannot get
+        # outside of user's text input
+        input_rect.w = max(100, text_surface.get_width()+10)
+        
+        pygame.display.update()
+
 def main_menu():
     while True:
         SCREEN.blit(BG, (0, 0))
@@ -86,7 +176,7 @@ def main_menu():
         MENU_TEXT = get_font(100).render("MAIN MENU", True, "#b68f40")
         MENU_RECT = MENU_TEXT.get_rect(center=(cfg.GAME_SETTING.WIDTH / 2, 200))
 
-        PLAY_BUTTON = Button(image=pygame.image.load(os.path.join(cfg.PATHS.ASSET_PATH, "Play Rect.png")), pos=(cfg.GAME_SETTING.WIDTH / 2, 500),
+        NAME_BUTTON = Button(image=pygame.image.load(os.path.join(cfg.PATHS.ASSET_PATH, "Play Rect.png")), pos=(cfg.GAME_SETTING.WIDTH / 2, 500),
                              text_input="PLAY", font=get_font(75), base_color="#d7fcd4", hovering_color="White")
         OPTIONS_BUTTON = Button(image=pygame.image.load(os.path.join(cfg.PATHS.ASSET_PATH, "Options Rect.png")), pos=(cfg.GAME_SETTING.WIDTH / 2, 750),
                                 text_input="OPTIONS", font=get_font(75), base_color="#d7fcd4", hovering_color="White")
@@ -95,7 +185,7 @@ def main_menu():
 
         SCREEN.blit(MENU_TEXT, MENU_RECT)
 
-        for button in [PLAY_BUTTON, OPTIONS_BUTTON, QUIT_BUTTON]:
+        for button in [NAME_BUTTON, OPTIONS_BUTTON, QUIT_BUTTON]:
             button.changeColor(MENU_MOUSE_POS)
             button.update(SCREEN)
 
@@ -104,8 +194,8 @@ def main_menu():
                 pygame.quit()
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
-                if PLAY_BUTTON.checkForInput(MENU_MOUSE_POS):
-                    play()
+                if NAME_BUTTON.checkForInput(MENU_MOUSE_POS):
+                    name_menu()
                 if OPTIONS_BUTTON.checkForInput(MENU_MOUSE_POS):
                     options()
                 if QUIT_BUTTON.checkForInput(MENU_MOUSE_POS):
@@ -116,6 +206,7 @@ def main_menu():
 
 
 def score_menu():
+    FIRST = True
     while True:
         SCREEN.blit(BG, (0, 0))
 
@@ -133,7 +224,9 @@ def score_menu():
                                hovering_color="White")
 
         SCREEN.blit(MENU_TEXT, MENU_RECT)
-        print(get_best_score(""))
+        if FIRST:
+            FIRST = False
+            print("score", get_best_score())
         for button in [MAIN_BUTTON, REPLAY_BUTTON]:
             button.changeColor(MENU_MOUSE_POS)
             button.update(SCREEN)
@@ -227,7 +320,7 @@ def play():
         cond_stop = (game.bomb_collusion >= 3) or \
             (time.time() - game.startTime - game.fgame.bonus_freeze > cfg.GAME_SETTING.END_TIME)
         if cond_stop:
-            add_setting_score("baptisye", int(game.fgame.player.point))
+            add_score(cfg.GAME_SETTING.NAME, int(game.fgame.player.point))
             score_menu()
 
         check_exit(game)
