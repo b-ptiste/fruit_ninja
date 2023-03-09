@@ -19,7 +19,7 @@ GAME_SETTING.RATIO_BOMB = settings[2]
 GAME_SETTING.AMOUNT_IT = settings[3]
 
 # time
-GAME_SETTING.END_TIME = 15
+GAME_SETTING.END_TIME = 30
 
 # name
 GAME_SETTING.NAME = "default user"

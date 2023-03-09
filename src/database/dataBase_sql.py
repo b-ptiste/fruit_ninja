@@ -26,7 +26,7 @@ def find_setting(name):
   return(myresult[0])
 
 
-def add_score(name, score):
+def add_score(name, score, u_id):
     mydb = mysql.connector.connect(
     host=host,
     user=user,
@@ -37,8 +37,8 @@ def add_score(name, score):
   
 
     mycursor.execute(f"""
-    INSERT INTO SCORES(NAME, SCORE)
-    VALUES ('{name}', {score});
+    INSERT INTO SCORES(ID, NAME, SCORE)
+    VALUES ('{u_id}', '{name}', {score});
     
     """
     )

@@ -2,6 +2,7 @@ import pygame
 from src.gameLauncher import GameLauncher
 import time
 import random
+import uuid
 from utils.config import cfg
 from utils.function import move_player, update_bonus, check_exit
 from src.FruitAnimation.explose import Explose
@@ -28,8 +29,21 @@ def get_font(size):  # Returns Press-Start-2P in the desired size
 
 
 def options():
+    base_font = get_font(32)
+    user_time = ''
+    
+    input_rect = pygame.Rect(cfg.GAME_SETTING.WIDTH / 2 + 200, 400, 200, 80)
+    color_active = pygame.Color('lightskyblue3')
+
+    # color_passive store color(chartreuse4) which is
+    # color of input box.
+    color_passive = pygame.Color('white')
+    color = color_passive
+    
+    active = False
     while True:
         SCREEN.blit(BG_OPTION, (0, 0))
+        SCREEN.blit(base_font.render(f"CHANGE END TIME", True, "White"), (cfg.GAME_SETTING.WIDTH / 2 - 300, 430))  # show score
         OPTIONS_MOUSE_POS = pygame.mouse.get_pos()
 
         OPTIONS_BACK = Button(image=None, pos=(cfg.GAME_SETTING.WIDTH/2 + 50, 300),
@@ -40,11 +54,14 @@ def options():
                               text_input="MEDIUM", font=get_font(80), base_color="Orange", hovering_color="White")
         OPTIONS_HARD = Button(image=None, pos=(cfg.GAME_SETTING.WIDTH/2 + 500, 100),
                               text_input="HARD", font=get_font(80), base_color="Red", hovering_color="White")
+        
+        OPTIONS_ENTER = Button(image=None, pos=(cfg.GAME_SETTING.WIDTH / 2 + 420, 450),
+                              text_input="ENTER", font=get_font(30), base_color="Black", hovering_color="White")
 
         OPTIONS_BACK.changeColor(OPTIONS_MOUSE_POS)
         OPTIONS_BACK.update(SCREEN)
 
-        for button in [OPTIONS_BACK, OPTIONS_EASY, OPTIONS_MEDIUM, OPTIONS_HARD]:
+        for button in [OPTIONS_BACK, OPTIONS_EASY, OPTIONS_MEDIUM, OPTIONS_HARD, OPTIONS_ENTER]:
             button.changeColor(OPTIONS_MOUSE_POS)
             button.update(SCREEN)
 
@@ -59,7 +76,7 @@ def options():
                     clic = False
                     if OPTIONS_EASY.checkForInput(OPTIONS_MOUSE_POS):
                         clic = True
-                        settings = find_setting()
+                        settings = find_setting("EASY")
                         cfg.GAME_SETTING.LEVEL = "EASY"
                     if OPTIONS_MEDIUM.checkForInput(OPTIONS_MOUSE_POS):
                         clic = True
@@ -70,6 +87,12 @@ def options():
                         settings = find_setting("HARD")
                         cfg.GAME_SETTING.LEVEL = "HARD"
                     # ratio
+                    if OPTIONS_ENTER.checkForInput(OPTIONS_MOUSE_POS):
+                        end_time = int(float(user_time)) 
+                        if end_time > 0:
+                            cfg.GAME_SETTING.END_TIME = end_time
+                            user_time = ''
+        
                     if clic:
                         cfg.GAME_SETTING.RATIO_BONUS = settings[1]
                         cfg.GAME_SETTING.RATIO_BOMB = settings[2]
@@ -77,8 +100,45 @@ def options():
                         # AMOUNT CREATION BY IT
                         cfg.GAME_SETTING.AMOUNT_IT = settings[3]
         
-
+                    if input_rect.collidepoint(event.pos):
+                        active = True
+                    else:
+                        active = False
+    
+            if event.type == pygame.KEYDOWN:
+    
+                # Check for backspace
+                if event.key == pygame.K_BACKSPACE:
+                    # get text input from 0 to -1 i.e. end.
+                    user_time = user_time[:-1]
+    
+                # Unicode standard is used for string
+                # formation                   
+                if event.unicode.isdigit():
+                    user_time += event.unicode
+            
+        if active:
+            color = color_active
+        else:
+            color = color_passive
+            
+        # draw rectangle and argument passed which should
+        # be on screen
+        
+        pygame.draw.rect(SCREEN, color, input_rect)
+        
+        text_surface = base_font.render(user_time, True, (255, 255, 255))
+        
+        # render at position stated in arguments
+        SCREEN.blit(text_surface, (input_rect.x+5, input_rect.y+5))
+        
+        # set width of textfield so that text cannot get
+        # outside of user's text input
+        input_rect.w = max(100, text_surface.get_width()+10)
+        
         pygame.display.update()
+        
+                
 
 
 
@@ -122,18 +182,14 @@ def name_menu():
             button.update(SCREEN)
 
         for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if PLAY_BUTTON.checkForInput(MENU_MOUSE_POS):
-                    cfg.GAME_SETTING.NAME = user_text
+                    if (len(user_text) > 0):
+                        cfg.GAME_SETTING.NAME = user_text
                     play()
                 if BACK_BUTTON.checkForInput(MENU_MOUSE_POS):
                     main_menu()
 
-        
-            if event.type == pygame.MOUSEBUTTONDOWN:
                 if input_rect.collidepoint(event.pos):
                     active = True
                 else:
@@ -149,7 +205,7 @@ def name_menu():
     
                 # Unicode standard is used for string
                 # formation
-                elif event.key == pygame.K_RETURN:
+                elif (event.key == pygame.K_RETURN) and (len(user_text) > 0):
                     cfg.GAME_SETTING.NAME = user_text
                     play()
     
@@ -215,7 +271,7 @@ def main_menu():
         pygame.display.update()
 
 
-def score_menu():
+def score_menu(player_score, player_name, u_id):
     FIRST = True
     while True:
         SCREEN.blit(BG_SCORE, (0, 0))
@@ -235,10 +291,19 @@ def score_menu():
         if FIRST:
             FIRST = False
             scores = get_best_score()
-        
+        score_curr_add = True
         for idx, score in enumerate(scores):
-            SCREEN.blit(font.render(f"{score[1]}", True, (255, 255, 255)), (100, idx * 60 + 300))  # show score
-            SCREEN.blit(font.render(f"{score[0]}", True, (255, 255, 255)), (300, idx * 60 + 250))  # show score
+            
+            if u_id == score[0]:
+                score_curr_add = False
+                SCREEN.blit(font.render(f"{score[1]}", True, "Green"), (800, idx * 130 + 280))  # show score
+                SCREEN.blit(font.render(f"{score[2]}", True, "Green"), (520, idx * 130 + 280))  # show score
+            elif score_curr_add and idx == 4:
+                SCREEN.blit(font.render(f"{player_score}", True, "Green"), (800, idx * 130 + 280))  # show score
+                SCREEN.blit(font.render(f"{player_name}", True, "Green"), (520, idx * 130 + 280))  # show score
+            else:
+                SCREEN.blit(font.render(f"{score[1]}", True, (255, 255, 255)), (800, idx * 130 + 280))  # show score
+                SCREEN.blit(font.render(f"{score[2]}", True, (255, 255, 255)), (520, idx * 130 + 280))  # show score
             
             
 
@@ -335,17 +400,12 @@ def play():
         cond_stop = (game.bomb_collusion >= 3) or \
             (time.time() - game.startTime - game.fgame.bonus_freeze > cfg.GAME_SETTING.END_TIME)
         if cond_stop:
-            add_score(cfg.GAME_SETTING.NAME, int(game.fgame.player.point))
-            score_menu()
+            u_id = str(uuid.uuid4())
+            add_score(cfg.GAME_SETTING.NAME, int(game.fgame.player.point), u_id)
+            score_menu(cfg.GAME_SETTING.NAME, int(game.fgame.player.point), u_id)
 
         check_exit(game)
 
-if __name__ == '__main__':
+if __name__ == '__main__':  
     main_menu()
 
-
-#TODO change mode
-#TODO save BDD
-#TODO Display best score
-#TODO Deploy
-#TODO refactoring code

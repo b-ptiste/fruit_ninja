@@ -1,5 +1,6 @@
 import mysql.connector
 
+
 def create_sql_db(host="localhost", user="root", password="Baptiste-2"):
     mydb = mysql.connector.connect(
     host=host,
@@ -35,6 +36,7 @@ def create_sql_table(host="localhost", user="root", password="Baptiste-2", datab
 
     mycursor.execute("""
     CREATE TABLE SCORES(
+    ID CHAR(36) NOT NULL,
     NAME CHAR(20) NOT NULL,
     SCORE INT NOT NULL
     );""")
