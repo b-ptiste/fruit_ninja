@@ -22,5 +22,7 @@ GAME_SETTING.AMOUNT_IT = settings[3]
 GAME_SETTING.END_TIME = 15
 
 # name
-
 GAME_SETTING.NAME = "default user"
+
+# level
+GAME_SETTING.LEVEL = "EASY"

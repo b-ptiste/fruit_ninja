@@ -59,7 +59,7 @@ def get_best_score():
   cursor.execute(f"""
   SELECT *
   FROM SCORES
-  ORDER BY SCORE DESC LIMIT 10
+  ORDER BY SCORE DESC LIMIT 5
   """)
 
   myresult = cursor.fetchall()

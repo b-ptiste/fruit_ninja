@@ -16,7 +16,9 @@ pygame.init()
 SCREEN = pygame.display.set_mode((cfg.GAME_SETTING.WIDTH, cfg.GAME_SETTING.HIGH))
 pygame.display.set_caption("Menu")
 
-BG = pygame.image.load(os.path.join(cfg.PATHS.IMAGE_PATH, "background_jungle.jpg"))
+BG_JUNGLE = pygame.image.load(os.path.join(cfg.PATHS.IMAGE_PATH, "background_jungle.jpg"))
+BG_SCORE = pygame.image.load(os.path.join(cfg.PATHS.IMAGE_PATH, "ranking.jpg"))
+BG_OPTION = pygame.image.load(os.path.join(cfg.PATHS.IMAGE_PATH, "option.png"))
 CROSS_GREEN = pygame.image.load(os.path.join(cfg.PATHS.IMAGE_PATH, "cross_green.png"))
 CROSS_RED = pygame.image.load(os.path.join(cfg.PATHS.IMAGE_PATH, "cross_red.png"))
 
@@ -27,21 +29,17 @@ def get_font(size):  # Returns Press-Start-2P in the desired size
 
 def options():
     while True:
+        SCREEN.blit(BG_OPTION, (0, 0))
         OPTIONS_MOUSE_POS = pygame.mouse.get_pos()
 
-        SCREEN.fill("white")
-
-        OPTIONS_TEXT = get_font(45).render("This is the OPTIONS screen.", True, "Black")
-        OPTIONS_RECT = OPTIONS_TEXT.get_rect(center=(640, 260))
-        SCREEN.blit(OPTIONS_TEXT, OPTIONS_RECT)
-        OPTIONS_BACK = Button(image=None, pos=(640, 460),
-                              text_input="BACK", font=get_font(75), base_color="Black", hovering_color="Green")
-        OPTIONS_EASY = Button(image=None, pos=(640, 660),
-                              text_input="EASY", font=get_font(75), base_color="Black", hovering_color="Green")
-        OPTIONS_MEDIUM = Button(image=None, pos=(640, 860),
-                              text_input="MEDIUM", font=get_font(75), base_color="Black", hovering_color="Green")
-        OPTIONS_HARD = Button(image=None, pos=(640, 1060),
-                              text_input="HARD", font=get_font(75), base_color="Black", hovering_color="Green")
+        OPTIONS_BACK = Button(image=None, pos=(cfg.GAME_SETTING.WIDTH/2 + 50, 300),
+                              text_input="BACK", font=get_font(80), base_color="White", hovering_color="White")
+        OPTIONS_EASY = Button(image=None, pos=(cfg.GAME_SETTING.WIDTH/2 - 500, 100),
+                              text_input="EASY", font=get_font(80), base_color="Green", hovering_color="White")
+        OPTIONS_MEDIUM = Button(image=None, pos=(cfg.GAME_SETTING.WIDTH/2, 100),
+                              text_input="MEDIUM", font=get_font(80), base_color="Orange", hovering_color="White")
+        OPTIONS_HARD = Button(image=None, pos=(cfg.GAME_SETTING.WIDTH/2 + 500, 100),
+                              text_input="HARD", font=get_font(80), base_color="Red", hovering_color="White")
 
         OPTIONS_BACK.changeColor(OPTIONS_MOUSE_POS)
         OPTIONS_BACK.update(SCREEN)
@@ -58,18 +56,26 @@ def options():
                 if OPTIONS_BACK.checkForInput(OPTIONS_MOUSE_POS):
                     main_menu()
                 else:
+                    clic = False
                     if OPTIONS_EASY.checkForInput(OPTIONS_MOUSE_POS):
-                        settings = find_setting("EASY")
+                        clic = True
+                        settings = find_setting()
+                        cfg.GAME_SETTING.LEVEL = "EASY"
                     if OPTIONS_MEDIUM.checkForInput(OPTIONS_MOUSE_POS):
+                        clic = True
                         settings = find_setting("MEDIUM")
+                        cfg.GAME_SETTING.LEVEL = "MEDIUM"
                     if OPTIONS_HARD.checkForInput(OPTIONS_MOUSE_POS):
+                        clic = True
                         settings = find_setting("HARD")
+                        cfg.GAME_SETTING.LEVEL = "HARD"
                     # ratio
-                    cfg.GAME_SETTING.RATIO_BONUS = settings[1]
-                    cfg.GAME_SETTING.RATIO_BOMB = settings[2]
+                    if clic:
+                        cfg.GAME_SETTING.RATIO_BONUS = settings[1]
+                        cfg.GAME_SETTING.RATIO_BOMB = settings[2]
 
-                    # AMOUNT CREATION BY IT
-                    cfg.GAME_SETTING.AMOUNT_IT = settings[3]
+                        # AMOUNT CREATION BY IT
+                        cfg.GAME_SETTING.AMOUNT_IT = settings[3]
         
 
         pygame.display.update()
@@ -81,31 +87,35 @@ def name_menu():
     
     base_font = get_font(32)
     user_text = ''
-    input_rect = pygame.Rect(200, 200, 140, 32)
+    input_rect = pygame.Rect(cfg.GAME_SETTING.WIDTH / 2 - 50, 400, 200, 80)
     color_active = pygame.Color('lightskyblue3')
 
     # color_passive store color(chartreuse4) which is
     # color of input box.
-    color_passive = pygame.Color('chartreuse4')
+    color_passive = pygame.Color('white')
     color = color_passive
     
     active = False
     while True:
-        SCREEN.blit(BG, (0, 0))
+        SCREEN.blit(BG_JUNGLE, (0, 0))
 
 
         MENU_MOUSE_POS = pygame.mouse.get_pos()
 
-        NAME_TEXT = get_font(100).render("MAIN MENU", True, "#b68f40")
-        MENU_RECT = NAME_TEXT.get_rect(center=(cfg.GAME_SETTING.WIDTH / 2, 200))
+        NAME_TEXT = get_font(50).render("CHOSE YOUR NAME", True, "white")
+        MENU_RECT = NAME_TEXT.get_rect(center=(cfg.GAME_SETTING.WIDTH / 2, 300))
 
-        PLAY_BUTTON = Button(image=pygame.image.load(os.path.join(cfg.PATHS.ASSET_PATH, "Play Rect.png")), pos=(cfg.GAME_SETTING.WIDTH / 2, 500),
+        LEVEL_TEXT = get_font(100).render(f"LEVEL {cfg.GAME_SETTING.LEVEL}", True, "#b68f40")
+        LEVEL_RECT = NAME_TEXT.get_rect(center=(cfg.GAME_SETTING.WIDTH / 2 , 100))
+
+        PLAY_BUTTON = Button(image=pygame.image.load(os.path.join(cfg.PATHS.ASSET_PATH, "Play Rect.png")), pos=(cfg.GAME_SETTING.WIDTH / 2, 700),
                              text_input="PLAY", font=get_font(75), base_color="#d7fcd4", hovering_color="White")
         BACK_BUTTON = Button(image=pygame.image.load(os.path.join(cfg.PATHS.ASSET_PATH, "Quit Rect.png")), pos=(cfg.GAME_SETTING.WIDTH / 2, 900),
-                             text_input="QUIT", font=get_font(75), base_color="#d7fcd4", hovering_color="White")
+                             text_input="BACK", font=get_font(75), base_color="#d7fcd4", hovering_color="White")
 
 
         SCREEN.blit(NAME_TEXT, MENU_RECT)
+        SCREEN.blit(LEVEL_TEXT, LEVEL_RECT)
 
         for button in [PLAY_BUTTON, BACK_BUTTON]:
             button.changeColor(MENU_MOUSE_POS)
@@ -168,12 +178,12 @@ def name_menu():
 
 def main_menu():
     while True:
-        SCREEN.blit(BG, (0, 0))
+        SCREEN.blit(BG_JUNGLE, (0, 0))
 
 
         MENU_MOUSE_POS = pygame.mouse.get_pos()
 
-        MENU_TEXT = get_font(100).render("MAIN MENU", True, "#b68f40")
+        MENU_TEXT = get_font(120).render("MAIN MENU", True, "#b68f40")
         MENU_RECT = MENU_TEXT.get_rect(center=(cfg.GAME_SETTING.WIDTH / 2, 200))
 
         NAME_BUTTON = Button(image=pygame.image.load(os.path.join(cfg.PATHS.ASSET_PATH, "Play Rect.png")), pos=(cfg.GAME_SETTING.WIDTH / 2, 500),
@@ -208,25 +218,30 @@ def main_menu():
 def score_menu():
     FIRST = True
     while True:
-        SCREEN.blit(BG, (0, 0))
+        SCREEN.blit(BG_SCORE, (0, 0))
 
 
         MENU_MOUSE_POS = pygame.mouse.get_pos()
 
-        MENU_TEXT = get_font(100).render("SCORE", True, "#b68f40")
-        MENU_RECT = MENU_TEXT.get_rect(center=(cfg.GAME_SETTING.WIDTH / 2, 200))
-
-        MAIN_BUTTON = Button(image=pygame.image.load(os.path.join(cfg.PATHS.ASSET_PATH, "Play Rect.png")), pos=(cfg.GAME_SETTING.WIDTH / 2, 875),
-                             text_input="MENU", font=get_font(75), base_color="#d7fcd4",
+        MAIN_BUTTON = Button(image=pygame.image.load(os.path.join(cfg.PATHS.ASSET_PATH, "Play Rect.png")), pos=(cfg.GAME_SETTING.WIDTH / 2 - 300, 1000),
+                             text_input="MENU", font=get_font(30), base_color="#d7fcd4",
                              hovering_color="White")
-        REPLAY_BUTTON = Button(image=pygame.image.load(os.path.join(cfg.PATHS.ASSET_PATH, "Options Rect.png")),
-                               pos=(cfg.GAME_SETTING.WIDTH / 2, 1000), text_input="REPLAY", font=get_font(75), base_color="#d7fcd4",
+        REPLAY_BUTTON = Button(image=pygame.image.load(os.path.join(cfg.PATHS.ASSET_PATH, "Play Rect.png")),
+                               pos=(cfg.GAME_SETTING.WIDTH / 2 + 300, 1000), text_input="REPLAY", font=get_font(30), base_color="#d7fcd4",
                                hovering_color="White")
 
-        SCREEN.blit(MENU_TEXT, MENU_RECT)
+        font = pygame.font.SysFont("Potta One", 60, 2)
+
         if FIRST:
             FIRST = False
-            print("score", get_best_score())
+            scores = get_best_score()
+        
+        for idx, score in enumerate(scores):
+            SCREEN.blit(font.render(f"{score[1]}", True, (255, 255, 255)), (100, idx * 60 + 300))  # show score
+            SCREEN.blit(font.render(f"{score[0]}", True, (255, 255, 255)), (300, idx * 60 + 250))  # show score
+            
+            
+
         for button in [MAIN_BUTTON, REPLAY_BUTTON]:
             button.changeColor(MENU_MOUSE_POS)
             button.update(SCREEN)
@@ -251,7 +266,7 @@ def play():
 
     while running:
 
-        SCREEN.blit(BG, (0, 0))  # show background
+        SCREEN.blit(BG_JUNGLE, (0, 0))  # show background
         SCREEN.blit(game.fgame.player.image, game.fgame.player.rect)  # show kunai
         score_text = font.render(f"Score : {game.fgame.player.point}", True, (255, 255, 255))  # show score
         SCREEN.blit(score_text, (40, 20))
