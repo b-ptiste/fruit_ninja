@@ -4,10 +4,11 @@ from utils.config import cfg
 
 
 class Explose(pygame.sprite.Sprite):
-
     def __init__(self, rect_x, rect_y):
         super().__init__()
-        self.image = pygame.image.load(os.path.join(cfg.PATHS.IMAGE_PATH, "explose1.png"))
+        self.image = pygame.image.load(
+            os.path.join(cfg.PATHS.IMAGE_PATH, "explose1.png")
+        )
         self.images = animations["explose"]
         self.rect = self.image.get_rect()
         self.rect.x = rect_x
@@ -35,6 +36,4 @@ def load_animation_images():
     return images
 
 
-animations = {
-    "explose": load_animation_images()
-}
+animations = {"explose": load_animation_images()}

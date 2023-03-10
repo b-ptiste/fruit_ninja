@@ -3,6 +3,7 @@ from yacs.config import CfgNode as CN
 GAME_SETTING = CN()
 
 from src.database.dataBase_sql import find_setting
+
 settings = find_setting("EASY")
 
 

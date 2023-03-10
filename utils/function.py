@@ -1,13 +1,15 @@
 from utils.config import cfg
+import os
 import cv2
 import time
 import pygame
 
+def get_font(size):  # Returns Press-Start-2P in the desired size
+    return pygame.font.Font(os.path.join(cfg.PATHS.ASSET_PATH, "font.ttf"), size)
 
 def get_position(results):
     cx, cy = 0, 0
     for handLms in results.multi_hand_landmarks:
-
         for index, lm in enumerate(handLms.landmark):
             if index == 9:
                 h = cfg.GAME_SETTING.HIGH
@@ -36,12 +38,14 @@ def update_bonus(game, font, SCREEN):
 
     if game.fgame.bonus_speed:
         if time.time() - game.begin_time_speed < 2:
-            SCREEN.blit(text_bonus_speed, (cfg.GAME_SETTING.WIDTH/2 - 100, 200))
+            SCREEN.blit(text_bonus_speed, (cfg.GAME_SETTING.WIDTH / 2 - 100, 200))
         if time.time() - game.begin_time_speed > 10:
             game.fgame.bonus_speed = False
     if game.fgame.bonus_multiplicative:
         if time.time() - game.begin_time_multiplicative < 2:
-            SCREEN.blit(text_bonus_multiplicative, (cfg.GAME_SETTING.WIDTH/2 - 100, 600))
+            SCREEN.blit(
+                text_bonus_multiplicative, (cfg.GAME_SETTING.WIDTH / 2 - 100, 600)
+            )
         if time.time() - game.begin_time_multiplicative > 10:
             game.fgame.bonus_multiplicative = False
 
@@ -52,5 +56,3 @@ def check_exit(game):
             if event.key == pygame.K_ESCAPE:
                 pygame.quit()
                 print("fermeture du jeu")
-
-

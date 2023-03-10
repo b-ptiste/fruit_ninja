@@ -6,7 +6,6 @@ import os
 
 
 class FruitGame:
-    
     def __init__(self):
         self.player = Player()
         self.all_fruit = pygame.sprite.Group()
@@ -32,11 +31,11 @@ class FruitGame:
         if specials == "bonus":
             speed = 5
             rand_bonus = random.choice(bonus)
-            path = os.path.join(cfg.PATHS.IMAGE_PATH, rand_bonus+".png")
+            path = os.path.join(cfg.PATHS.IMAGE_PATH, rand_bonus + ".png")
         elif specials == "bomb":
             speed = 5
             rand_bonus = random.choice(bomb)
-            path = os.path.join(cfg.PATHS.IMAGE_PATH, rand_bonus+".png")
+            path = os.path.join(cfg.PATHS.IMAGE_PATH, rand_bonus + ".png")
         else:
             speed = random.randint(speed_min, speed_max)
             rand_bonus = None
@@ -72,12 +71,20 @@ class FruitGame:
         for fruit in self.all_fruit:
             cx = fruit.sens
             cy = fruit.direction
-            fruit.rect.x += cx * (fruit.speed - fruit.speed / 2 * (self.bonus_freeze >= 1))
-            fruit.rect.y += cy * (fruit.speed - fruit.speed / 2 * (self.bonus_freeze >= 1))
+            fruit.rect.x += cx * (
+                fruit.speed - fruit.speed / 2 * (self.bonus_freeze >= 1)
+            )
+            fruit.rect.y += cy * (
+                fruit.speed - fruit.speed / 2 * (self.bonus_freeze >= 1)
+            )
             fruit.rotate()
-            if (fruit.rect.x > cfg.GAME_SETTING.WIDTH) or (fruit.rect.x + fruit.rect.width < 0):
+            if (fruit.rect.x > cfg.GAME_SETTING.WIDTH) or (
+                fruit.rect.x + fruit.rect.width < 0
+            ):
                 self.all_fruit.remove(fruit)
-            if (fruit.rect.y > cfg.GAME_SETTING.HIGH) or (fruit.rect.y + fruit.rect.height < 0):
+            if (fruit.rect.y > cfg.GAME_SETTING.HIGH) or (
+                fruit.rect.y + fruit.rect.height < 0
+            ):
                 self.all_fruit.remove(fruit)
 
     @staticmethod

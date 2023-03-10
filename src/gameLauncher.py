@@ -8,7 +8,6 @@ from src.FruitAnimation.fruitgame import FruitGame
 
 class GameLauncher:
     def __init__(self):
-
         # create game
         self.fgame = FruitGame()
 
@@ -21,14 +20,3 @@ class GameLauncher:
         self.begin_time_speed = time.time()
         self.all_explosion = pygame.sprite.Group()
         self.bomb_collusion = 0
-
-
-
-
-
-
-
-
-
-
-

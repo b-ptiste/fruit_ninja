@@ -4,6 +4,7 @@ import random
 import os
 from utils.config import cfg
 
+
 class Game:
     def __init__(self):
         self.player = Player()
@@ -29,7 +30,7 @@ class Game:
         if with_bonus:
             speed = 5
             rand_bonus = random.choice(bonus)
-            path = os.path.join(cfg.PATHS.IMAGE_PATH, rand_bonus+".png")
+            path = os.path.join(cfg.PATHS.IMAGE_PATH, rand_bonus + ".png")
         else:
             speed = random.randint(speed_min, speed_max)
             rand_bonus = None
@@ -64,12 +65,16 @@ class Game:
         for fruit in self.all_fruit:
             cx = fruit.sens
             cy = fruit.direction
-            fruit.rect.x += cx*(fruit.speed - fruit.speed / 2 * (self.bonus_freeze >= 1))
-            fruit.rect.y += cy*(fruit.speed - fruit.speed / 2 * (self.bonus_freeze >= 1))
+            fruit.rect.x += cx * (
+                fruit.speed - fruit.speed / 2 * (self.bonus_freeze >= 1)
+            )
+            fruit.rect.y += cy * (
+                fruit.speed - fruit.speed / 2 * (self.bonus_freeze >= 1)
+            )
             fruit.rotate()
-            if (fruit.rect.x > 628) or (fruit.rect.x+fruit.rect.width < 0):
+            if (fruit.rect.x > 628) or (fruit.rect.x + fruit.rect.width < 0):
                 self.all_fruit.remove(fruit)
-            if (fruit.rect.y > 417) or (fruit.rect.y+fruit.rect.height < 0):
+            if (fruit.rect.y > 417) or (fruit.rect.y + fruit.rect.height < 0):
                 self.all_fruit.remove(fruit)
 
     def check_collision(self, player, fruit):
