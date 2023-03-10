@@ -30,7 +30,7 @@ def get_font(size):  # Returns Press-Start-2P in the desired size
 
 def options():
     base_font = get_font(32)
-    user_time = ''
+    user_time = str(cfg.GAME_SETTING.END_TIME)
     
     input_rect = pygame.Rect(cfg.GAME_SETTING.WIDTH / 2 + 200, 400, 200, 80)
     color_active = pygame.Color('lightskyblue3')
@@ -43,11 +43,11 @@ def options():
     active = False
     while True:
         SCREEN.blit(BG_OPTION, (0, 0))
-        SCREEN.blit(base_font.render(f"CHANGE END TIME", True, "White"), (cfg.GAME_SETTING.WIDTH / 2 - 300, 430))  # show score
+        SCREEN.blit(base_font.render(f"CHANGE END TIME", True, "WHITE"), (cfg.GAME_SETTING.WIDTH / 2 - 300, 430))  # show score
         OPTIONS_MOUSE_POS = pygame.mouse.get_pos()
 
         OPTIONS_BACK = Button(image=None, pos=(cfg.GAME_SETTING.WIDTH/2 + 50, 300),
-                              text_input="BACK", font=get_font(80), base_color="White", hovering_color="White")
+                              text_input="BACK", font=get_font(50), base_color="BLACK", hovering_color="White")
         OPTIONS_EASY = Button(image=None, pos=(cfg.GAME_SETTING.WIDTH/2 - 500, 100),
                               text_input="EASY", font=get_font(80), base_color="Green", hovering_color="White")
         OPTIONS_MEDIUM = Button(image=None, pos=(cfg.GAME_SETTING.WIDTH/2, 100),
@@ -56,7 +56,7 @@ def options():
                               text_input="HARD", font=get_font(80), base_color="Red", hovering_color="White")
         
         OPTIONS_ENTER = Button(image=None, pos=(cfg.GAME_SETTING.WIDTH / 2 + 420, 450),
-                              text_input="ENTER", font=get_font(30), base_color="Black", hovering_color="White")
+                              text_input="ENTER", font=get_font(30), base_color="BLACK", hovering_color="White")
 
         OPTIONS_BACK.changeColor(OPTIONS_MOUSE_POS)
         OPTIONS_BACK.update(SCREEN)
@@ -101,6 +101,7 @@ def options():
                         cfg.GAME_SETTING.AMOUNT_IT = settings[3]
         
                     if input_rect.collidepoint(event.pos):
+                        user_time = ''
                         active = True
                     else:
                         active = False
@@ -124,10 +125,18 @@ def options():
             
         # draw rectangle and argument passed which should
         # be on screen
+
+        LEVEL_TEXT = get_font(30).render(f"LEVEL : {cfg.GAME_SETTING.LEVEL}", True, "white")
+        LEVEL_RECT = LEVEL_TEXT.get_rect(center=(cfg.GAME_SETTING.WIDTH / 2 - 20, 500))
+
+        END_TIME_TEXT = get_font(30).render(f"END TIME : {cfg.GAME_SETTING.END_TIME} seconds", True, "white")
+        END_TIME_RECT = END_TIME_TEXT.get_rect(center=(cfg.GAME_SETTING.WIDTH / 2 - 20, 550))
+        SCREEN.blit(LEVEL_TEXT, LEVEL_RECT)
+        SCREEN.blit(END_TIME_TEXT, END_TIME_RECT)
         
         pygame.draw.rect(SCREEN, color, input_rect)
         
-        text_surface = base_font.render(user_time, True, (255, 255, 255))
+        text_surface = base_font.render(user_time, True, "Black")
         
         # render at position stated in arguments
         SCREEN.blit(text_surface, (input_rect.x+5, input_rect.y+5))
@@ -146,8 +155,9 @@ def name_menu():
 
     
     base_font = get_font(32)
-    user_text = ''
-    input_rect = pygame.Rect(cfg.GAME_SETTING.WIDTH / 2 - 50, 400, 200, 80)
+    user_text_default = cfg.GAME_SETTING.NAME
+    user_text = user_text_default
+    input_rect = pygame.Rect(cfg.GAME_SETTING.WIDTH / 2 - 50, 350, 150, 80)
     color_active = pygame.Color('lightskyblue3')
 
     # color_passive store color(chartreuse4) which is
@@ -162,11 +172,10 @@ def name_menu():
 
         MENU_MOUSE_POS = pygame.mouse.get_pos()
 
-        NAME_TEXT = get_font(50).render("CHOSE YOUR NAME", True, "white")
+        NAME_TEXT = get_font(30).render("CHOSE YOUR NAME", True, "white")
         MENU_RECT = NAME_TEXT.get_rect(center=(cfg.GAME_SETTING.WIDTH / 2, 300))
 
-        LEVEL_TEXT = get_font(100).render(f"LEVEL {cfg.GAME_SETTING.LEVEL}", True, "#b68f40")
-        LEVEL_RECT = NAME_TEXT.get_rect(center=(cfg.GAME_SETTING.WIDTH / 2 , 100))
+        
 
         PLAY_BUTTON = Button(image=pygame.image.load(os.path.join(cfg.PATHS.ASSET_PATH, "Play Rect.png")), pos=(cfg.GAME_SETTING.WIDTH / 2, 700),
                              text_input="PLAY", font=get_font(75), base_color="#d7fcd4", hovering_color="White")
@@ -175,7 +184,7 @@ def name_menu():
 
 
         SCREEN.blit(NAME_TEXT, MENU_RECT)
-        SCREEN.blit(LEVEL_TEXT, LEVEL_RECT)
+
 
         for button in [PLAY_BUTTON, BACK_BUTTON]:
             button.changeColor(MENU_MOUSE_POS)
@@ -191,6 +200,7 @@ def name_menu():
                     main_menu()
 
                 if input_rect.collidepoint(event.pos):
+                    user_text = ''
                     active = True
                 else:
                     active = False
@@ -221,7 +231,7 @@ def name_menu():
         # be on screen
         pygame.draw.rect(SCREEN, color, input_rect)
     
-        text_surface = base_font.render(user_text, True, (255, 255, 255))
+        text_surface = base_font.render(user_text, True, "Black")
         
         # render at position stated in arguments
         SCREEN.blit(text_surface, (input_rect.x+5, input_rect.y+5))
