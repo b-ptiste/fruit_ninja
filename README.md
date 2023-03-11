@@ -4,6 +4,9 @@ It is a personal project. I try to recreate of the popular mobile game "Fruit Ni
 
 # Installation
 * `Clone the repository`
+* `conda create -n venv python=3.9
+* conda activate venv
+
 install requirements
 * `pip install requirements.txt`
 
