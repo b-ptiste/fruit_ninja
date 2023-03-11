@@ -15,6 +15,7 @@ Lauch the game and enjoy !
 
 * `python main.py --host #your/host --user #your/user/name --password #your/password --database #your/database/name`
 
+# Game
 ![image](figures/menu.png)
 ![image](figures/option.png)
 ![image](figures/name.png)
