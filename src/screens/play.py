@@ -37,7 +37,7 @@ def screen(SCREEN):
 
         # show remaining time
         time_text = font.render(
-            f"Temps : {round(time.time() - game.startTime - game.fgame.bonus_freeze, 2)}",
+            f"Time : {round(time.time() - game.startTime - game.fgame.bonus_freeze, 2)}",
             True,
             (255, 255, 255),
         )

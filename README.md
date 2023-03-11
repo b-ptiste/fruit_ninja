@@ -1,9 +1,18 @@
 # Fruit Ninja Pygame Clone
 
-This is a recreation of the popular mobile game "Fruit Ninja" using Pygame.
+It is a personal project. I try to recreate of the popular mobile game "Fruit Ninja" using Pygame and the webcame.
 
 # Installation
-Clone the repository
+* `Clone the repository`
+install requirements
+* `pip install requirements.txt`
+
+Create the database. You must have MySQL.
+
+*`python build_db.py --host #your/host --user #your/user/name --password #your/password --database #your/database/name`
+
+Lauch the game and enjoy !
+*`python main.py --host #your/host --user #your/user/name --password #your/password --database #your/database/name`
 
 
 # Acknowledgments
