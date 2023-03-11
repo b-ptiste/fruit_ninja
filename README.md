@@ -9,11 +9,11 @@ install requirements
 
 Create the database. You must have MySQL.
 
-*`python build_db.py --host #your/host --user #your/user/name --password #your/password --database #your/database/name`
+* `python build_db.py --host #your/host --user #your/user/name --password #your/password --database #your/database/name`
 
 Lauch the game and enjoy !
 
-*`python main.py --host #your/host --user #your/user/name --password #your/password --database #your/database/name`
+* `python main.py --host #your/host --user #your/user/name --password #your/password --database #your/database/name`
 
 ![image](figures/menu.png)
 ![image](figures/option.png)
