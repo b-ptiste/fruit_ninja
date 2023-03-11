@@ -8,15 +8,13 @@ class Fruit(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.speed = speed
         self.direction = direction
-        self.sens = sens
+        self.way = sens
         self.point = speed
         self.origin_image = self.image
         self.angle = 0
         self.rect.x = cx
         self.rect.y = cy
         self.bonus = bonus
-        if bonus == "bomb":
-            self.speed *= 1
 
     def rotate(self):
         self.angle += 10

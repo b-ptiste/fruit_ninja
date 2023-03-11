@@ -1,8 +1,8 @@
-import pygame
 import cv2
-import os
-import time
 import mediapipe as mp
+import time
+import pygame
+
 from src.FruitAnimation.fruitgame import FruitGame
 
 
@@ -10,7 +10,6 @@ class GameLauncher:
     def __init__(self):
         # create game
         self.fgame = FruitGame()
-
         self.cap = cv2.VideoCapture(0)
         mp_hands = mp.solutions.hands
         self.hands = mp_hands.Hands(True)

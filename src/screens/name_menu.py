@@ -1,9 +1,10 @@
-import pygame
 import os
-from utils.function import get_font
+import pygame
+
 from src.tools.button import Button
 from src.screens import play, main_menu
 from utils.config import cfg
+from utils.function import get_font
 
 
 def screen(SCREEN):

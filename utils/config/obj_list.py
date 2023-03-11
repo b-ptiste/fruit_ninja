@@ -4,19 +4,19 @@ OBJ_LIST = CN()
 
 # fruit list
 OBJ_LIST.FRUIT_LIST = [
-    "ananas",
-    "fraise",
-    "fruit_passion",
+    "pineapple",
+    "strawberry",
+    "passion_fruit",
     "kiwi",
-    "pasteque",
-    "poivron_jaune",
-    "poivron_rouge",
-    "poivron_vert",
-    "pomme_verte",
+    "watermelon",
+    "yellow_pepper",
+    "red_pepper",
+    "green_pepper",
+    "green_apple",
 ]
 
 # bonus list
-OBJ_LIST.BONUS_LIST = ["banane", "banane_glace", "piment"]
+OBJ_LIST.BONUS_LIST = ["banana", "banana_ice", "peper"]
 
 # bomb list
 OBJ_LIST.BOMB_LIST = ["bomb"]

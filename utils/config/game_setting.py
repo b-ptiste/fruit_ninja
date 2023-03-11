@@ -4,20 +4,23 @@ from src.database.dataBase_sql import find_setting
 GAME_SETTING = CN()
 
 
-settings = find_setting("EASY")
-
-
 # picture dimension
 GAME_SETTING.HIGH = 1080
 GAME_SETTING.WIDTH = 1920
 
-settings = find_setting("EASY")
+
+GAME_SETTING.HOST = None
+GAME_SETTING.USER = None
+GAME_SETTING.PASSWORD = None
+GAME_SETTING.DATABASE = None
+
+
 # ratio
-GAME_SETTING.RATIO_BONUS = settings[1]
-GAME_SETTING.RATIO_BOMB = settings[2]
+GAME_SETTING.RATIO_BONUS = None
+GAME_SETTING.RATIO_BOMB = None
 
 # AMOUNT CREATION BY IT
-GAME_SETTING.AMOUNT_IT = settings[3]
+GAME_SETTING.AMOUNT_IT = None
 
 # time
 GAME_SETTING.END_TIME = 30
@@ -27,3 +30,7 @@ GAME_SETTING.NAME = "default user"
 
 # level
 GAME_SETTING.LEVEL = "EASY"
+
+# bonus
+GAME_SETTING.END_TIME_BONUS_SPEED = 10
+GAME_SETTING.END_TIME_BONUS_MULT = 10

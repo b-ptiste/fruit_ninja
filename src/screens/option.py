@@ -1,8 +1,9 @@
 import pygame
+
 from src.screens import main_menu
 from src.tools.button import Button
-from utils.function import get_font
 from src.database.dataBase_sql import find_setting
+from utils.function import get_font
 from utils.config import cfg
 
 
@@ -93,15 +94,33 @@ def screen(SCREEN):
                     clic = False
                     if OPTIONS_EASY.checkForInput(OPTIONS_MOUSE_POS):
                         clic = True
-                        settings = find_setting("EASY")
+                        settings = find_setting(
+                            "EASY",
+                            cfg.GAME_SETTING.HOST,
+                            cfg.GAME_SETTING.USER,
+                            cfg.GAME_SETTING.PASSWORD,
+                            cfg.GAME_SETTING.DATABASE,
+                        )
                         cfg.GAME_SETTING.LEVEL = "EASY"
                     if OPTIONS_MEDIUM.checkForInput(OPTIONS_MOUSE_POS):
                         clic = True
-                        settings = find_setting("MEDIUM")
+                        settings = find_setting(
+                            "MEDIUM",
+                            cfg.GAME_SETTING.HOST,
+                            cfg.GAME_SETTING.USER,
+                            cfg.GAME_SETTING.PASSWORD,
+                            cfg.GAME_SETTING.DATABASE,
+                        )
                         cfg.GAME_SETTING.LEVEL = "MEDIUM"
                     if OPTIONS_HARD.checkForInput(OPTIONS_MOUSE_POS):
                         clic = True
-                        settings = find_setting("HARD")
+                        settings = find_setting(
+                            "HARD",
+                            cfg.GAME_SETTING.HOST,
+                            cfg.GAME_SETTING.USER,
+                            cfg.GAME_SETTING.PASSWORD,
+                            cfg.GAME_SETTING.DATABASE,
+                        )
                         cfg.GAME_SETTING.LEVEL = "HARD"
                     # ratio
                     if OPTIONS_ENTER.checkForInput(OPTIONS_MOUSE_POS):

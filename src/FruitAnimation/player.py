@@ -1,5 +1,6 @@
-import pygame.sprite
 import os
+
+import pygame.sprite
 from utils.config import cfg
 
 

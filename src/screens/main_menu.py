@@ -1,6 +1,7 @@
-import pygame
 import os
+import pygame
 import sys
+
 from src.tools.button import Button
 from src.screens import name_menu, option
 from utils.config import cfg

@@ -1,13 +1,14 @@
-import pygame
-import random
-from src.gameLauncher import GameLauncher
-from src.FruitAnimation.explose import Explose
 import time
 import uuid
+import pygame
+import random
+
+from src.database.dataBase_sql import add_score
+from src.gameLauncher import GameLauncher
+from src.FruitAnimation.explose import Explose
+from src.screens import score_menu
 from utils.config import cfg
 from utils.function import move_player, update_bonus, check_exit
-from src.database.dataBase_sql import add_score
-from src.screens import score_menu
 
 
 def screen(SCREEN):
@@ -98,9 +99,17 @@ def screen(SCREEN):
         )
         if cond_stop:
             u_id = str(uuid.uuid4())
-            add_score(cfg.GAME_SETTING.NAME, int(game.fgame.player.point), u_id)
+            add_score(
+                cfg.GAME_SETTING.NAME,
+                int(game.fgame.player.point),
+                u_id,
+                cfg.GAME_SETTING.HOST,
+                cfg.GAME_SETTING.USER,
+                cfg.GAME_SETTING.PASSWORD,
+                cfg.GAME_SETTING.DATABASE,
+            )
             score_menu.screen(
                 cfg.GAME_SETTING.NAME, int(game.fgame.player.point), u_id, SCREEN
             )
 
-        check_exit(game)
+        check_exit()

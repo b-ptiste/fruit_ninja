@@ -1,5 +1,6 @@
-import pygame
 import os
+import pygame
+
 from utils.config import cfg
 
 

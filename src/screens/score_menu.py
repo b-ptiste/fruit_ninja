@@ -1,11 +1,12 @@
 import os
 import pygame
-from utils.function import get_font
+import sys
+
+from src.database.dataBase_sql import get_best_score
 from src.tools.button import Button
 from src.screens import main_menu, play
-from src.database.dataBase_sql import get_best_score
-import sys
 from utils.config import cfg
+from utils.function import get_font
 
 
 def screen(player_score, player_name, u_id, SCREEN):
@@ -40,8 +41,13 @@ def screen(player_score, player_name, u_id, SCREEN):
 
         if FIRST:
             FIRST = False
-            scores = get_best_score()
-        score_curr_add = True
+            scores = get_best_score(
+                cfg.GAME_SETTING.HOST,
+                cfg.GAME_SETTING.USER,
+                cfg.GAME_SETTING.PASSWORD,
+                cfg.GAME_SETTING.DATABASE,
+            )
+            score_curr_add = True
         for idx, score in enumerate(scores):
             if u_id == score[0]:
                 score_curr_add = False

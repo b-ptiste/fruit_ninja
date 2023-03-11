@@ -1,8 +1,9 @@
+import os
+import random
+
 from src.FruitAnimation.player import Player
 from src.FruitAnimation.fruit import *
 from utils.config import cfg
-import random
-import os
 
 
 class FruitGame:
@@ -29,11 +30,11 @@ class FruitGame:
         bomb = cfg.OBJ_LIST.BOMB_LIST
 
         if specials == "bonus":
-            speed = 5
+            speed = random.randint(speed_min, speed_max)
             rand_bonus = random.choice(bonus)
             path = os.path.join(cfg.PATHS.IMAGE_PATH, rand_bonus + ".png")
         elif specials == "bomb":
-            speed = 5
+            speed = random.randint(speed_min, speed_max)
             rand_bonus = random.choice(bomb)
             path = os.path.join(cfg.PATHS.IMAGE_PATH, rand_bonus + ".png")
         else:
@@ -43,33 +44,33 @@ class FruitGame:
 
         if side == 1:
             direction = random.randint(dir_min, dir_max)
-            sens = 1
+            way = 1
             cx = 0
             cy = random.randint(cy_min, cy_max)
 
         elif side == 2:
             direction = random.randint(dir_min, dir_max)
-            sens = -1
+            way = -1
             cx = cfg.GAME_SETTING.WIDTH
             cy = random.randint(cy_min, cy_max)
 
         elif side == 3:
             direction = random.randint(0, dir_max)
-            sens = -1
+            way = -1
             cx = random.randint(cx_min, cx_max)
             cy = -20
 
         else:
             direction = random.randint(dir_min, 0)
-            sens = 1
+            way = 1
             cx = random.randint(cx_min, cx_max)
             cy = cfg.GAME_SETTING.HIGH
 
-        self.all_fruit.add(Fruit(path, speed, direction, sens, cx, cy, rand_bonus))
+        self.all_fruit.add(Fruit(path, speed, direction, way, cx, cy, rand_bonus))
 
     def move(self):
         for fruit in self.all_fruit:
-            cx = fruit.sens
+            cx = fruit.way
             cy = fruit.direction
             fruit.rect.x += cx * (
                 fruit.speed - fruit.speed / 2 * (self.bonus_freeze >= 1)

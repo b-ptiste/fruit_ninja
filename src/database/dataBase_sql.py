@@ -1,12 +1,7 @@
 import mysql.connector
 
-host = "localhost"
-user = "root"
-password = "Baptiste-2"
-database = "fruitdb"
 
-
-def find_setting(name):
+def find_setting(name, host, user, password, database):
     assert name in ["EASY", "MEDIUM", "HARD"], f"name must be in EASY, MEDIUM, HARD"
     mydb = mysql.connector.connect(
         host=host, user=user, password=password, database=database
@@ -27,7 +22,7 @@ def find_setting(name):
     return myresult[0]
 
 
-def add_score(name, score, u_id):
+def add_score(name, score, u_id, host, user, password, database):
     mydb = mysql.connector.connect(
         host=host, user=user, password=password, database=database
     )
@@ -45,7 +40,7 @@ def add_score(name, score, u_id):
     mydb.close()
 
 
-def get_best_score():
+def get_best_score(host, user, password, database):
     mydb = mysql.connector.connect(
         host=host, user=user, password=password, database=database
     )
