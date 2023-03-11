@@ -1,7 +1,17 @@
-def screen(player_score, player_name, u_id):
+import os
+import pygame
+from utils.function import get_font
+from src.tools.button import Button
+from src.screens import main_menu, play
+from src.database.dataBase_sql import get_best_score
+import sys
+from utils.config import cfg
+
+
+def screen(player_score, player_name, u_id, SCREEN):
     FIRST = True
     while True:
-        SCREEN.blit(BG_SCORE, (0, 0))
+        SCREEN.blit(cfg.IMAGES.BG_SCORE[0], (0, 0))
 
         MENU_MOUSE_POS = pygame.mouse.get_pos()
 
@@ -69,9 +79,8 @@ def screen(player_score, player_name, u_id):
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if MAIN_BUTTON.checkForInput(MENU_MOUSE_POS):
-                    main_menu()
+                    main_menu.screen(SCREEN)
                 if REPLAY_BUTTON.checkForInput(MENU_MOUSE_POS):
-                    play()
+                    play.screen(SCREEN)
 
         pygame.display.update()
-

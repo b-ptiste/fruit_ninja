@@ -4,8 +4,10 @@ import cv2
 import time
 import pygame
 
+
 def get_font(size):  # Returns Press-Start-2P in the desired size
     return pygame.font.Font(os.path.join(cfg.PATHS.ASSET_PATH, "font.ttf"), size)
+
 
 def get_position(results):
     cx, cy = 0, 0

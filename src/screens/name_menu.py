@@ -1,5 +1,12 @@
+import pygame
+import os
+from utils.function import get_font
+from src.tools.button import Button
+from src.screens import play, main_menu
+from utils.config import cfg
 
-def screen():
+
+def screen(SCREEN):
     base_font = get_font(32)
     user_text_default = cfg.GAME_SETTING.NAME
     user_text = user_text_default
@@ -13,7 +20,7 @@ def screen():
 
     active = False
     while True:
-        SCREEN.blit(BG_JUNGLE, (0, 0))
+        SCREEN.blit(cfg.IMAGES.BG_JUNGLE[0], (0, 0))
 
         MENU_MOUSE_POS = pygame.mouse.get_pos()
 
@@ -52,9 +59,9 @@ def screen():
                 if PLAY_BUTTON.checkForInput(MENU_MOUSE_POS):
                     if len(user_text) > 0:
                         cfg.GAME_SETTING.NAME = user_text
-                    play()
+                    play.screen(SCREEN)
                 if BACK_BUTTON.checkForInput(MENU_MOUSE_POS):
-                    main_menu()
+                    main_menu.screen(SCREEN)
 
                 if input_rect.collidepoint(event.pos):
                     user_text = ""
@@ -72,7 +79,7 @@ def screen():
                 # formation
                 elif (event.key == pygame.K_RETURN) and (len(user_text) > 0):
                     cfg.GAME_SETTING.NAME = user_text
-                    play()
+                    play.screen(SCREEN)
 
                 else:
                     user_text += event.unicode
@@ -96,5 +103,3 @@ def screen():
         input_rect.w = max(100, text_surface.get_width() + 10)
 
         pygame.display.update()
-
-

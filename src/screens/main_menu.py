@@ -3,12 +3,13 @@ import os
 import sys
 from src.tools.button import Button
 from src.screens import name_menu, option
-import utils.config as cfg
+from utils.config import cfg
 from utils.function import get_font
 
-def screen(SCREEN, BG_JUNGLE, ):
+
+def screen(SCREEN):
     while True:
-        SCREEN.blit(BG_JUNGLE, (0, 0))
+        SCREEN.blit(cfg.IMAGES.BG_JUNGLE[0], (0, 0))
 
         MENU_MOUSE_POS = pygame.mouse.get_pos()
 
@@ -58,13 +59,11 @@ def screen(SCREEN, BG_JUNGLE, ):
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if NAME_BUTTON.checkForInput(MENU_MOUSE_POS):
-                    name_menu.screen()
+                    name_menu.screen(SCREEN)
                 if OPTIONS_BUTTON.checkForInput(MENU_MOUSE_POS):
-                    option.screen()
+                    option.screen(SCREEN)
                 if QUIT_BUTTON.checkForInput(MENU_MOUSE_POS):
                     pygame.quit()
                     sys.exit()
 
         pygame.display.update()
-
-

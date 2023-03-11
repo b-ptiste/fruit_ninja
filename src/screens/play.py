@@ -1,11 +1,23 @@
-def screen():
+import pygame
+import random
+from src.gameLauncher import GameLauncher
+from src.FruitAnimation.explose import Explose
+import time
+import uuid
+from utils.config import cfg
+from utils.function import move_player, update_bonus, check_exit
+from src.database.dataBase_sql import add_score
+from src.screens import score_menu
+
+
+def screen(SCREEN):
     game = GameLauncher()
 
     running = True
     font = pygame.font.SysFont("Potta One", 60, 2)
 
     while running:
-        SCREEN.blit(BG_JUNGLE, (0, 0))  # show background
+        SCREEN.blit(cfg.IMAGES.BG_JUNGLE[0], (0, 0))  # show background
         SCREEN.blit(game.fgame.player.image, game.fgame.player.rect)  # show kunai
         score_text = font.render(
             f"Score : {game.fgame.player.point}", True, (255, 255, 255)
@@ -14,9 +26,13 @@ def screen():
 
         for i in range(4):
             if i > game.bomb_collusion:
-                SCREEN.blit(CROSS_GREEN, (cfg.GAME_SETTING.WIDTH - i * 150, 100))
+                SCREEN.blit(
+                    cfg.IMAGES.CROSS_GREEN[0], (cfg.GAME_SETTING.WIDTH - i * 150, 100)
+                )
             else:
-                SCREEN.blit(CROSS_RED, (cfg.GAME_SETTING.WIDTH - i * 150, 100))
+                SCREEN.blit(
+                    cfg.IMAGES.CROSS_RED[0], (cfg.GAME_SETTING.WIDTH - i * 150, 100)
+                )
 
         # show remaining time
         time_text = font.render(
@@ -83,6 +99,8 @@ def screen():
         if cond_stop:
             u_id = str(uuid.uuid4())
             add_score(cfg.GAME_SETTING.NAME, int(game.fgame.player.point), u_id)
-            score_menu(cfg.GAME_SETTING.NAME, int(game.fgame.player.point), u_id)
+            score_menu.screen(
+                cfg.GAME_SETTING.NAME, int(game.fgame.player.point), u_id, SCREEN
+            )
 
         check_exit(game)

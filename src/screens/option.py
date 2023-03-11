@@ -1,5 +1,12 @@
+import pygame
+from src.screens import main_menu
+from src.tools.button import Button
+from utils.function import get_font
+from src.database.dataBase_sql import find_setting
+from utils.config import cfg
 
-def screen():
+
+def screen(SCREEN):
     base_font = get_font(32)
     user_time = str(cfg.GAME_SETTING.END_TIME)
 
@@ -13,7 +20,7 @@ def screen():
 
     active = False
     while True:
-        SCREEN.blit(BG_OPTION, (0, 0))
+        SCREEN.blit(cfg.IMAGES.BG_OPTION[0], (0, 0))
         SCREEN.blit(
             base_font.render(f"CHANGE END TIME", True, "WHITE"),
             (cfg.GAME_SETTING.WIDTH / 2 - 300, 430),
@@ -81,7 +88,7 @@ def screen():
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if OPTIONS_BACK.checkForInput(OPTIONS_MOUSE_POS):
-                    main_menu()
+                    main_menu.screen(SCREEN)
                 else:
                     clic = False
                     if OPTIONS_EASY.checkForInput(OPTIONS_MOUSE_POS):
@@ -161,4 +168,3 @@ def screen():
         input_rect.w = max(100, text_surface.get_width() + 10)
 
         pygame.display.update()
-
